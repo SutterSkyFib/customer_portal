@@ -25,16 +25,18 @@
             </div>
             <div class="col-auto">
                <!-- Nav -->
-               <div class="text-right">
-               <h6 class="header-pretitle text-secondary-light">
-                  {{utrans("headers.information")}}
-               </h6>
-               <p class="text-white mb-0">
-                     {{utrans("profile.name")}}
-               </p>
-               <p class="text-white mb-0">
-                     {{utrans("profile.address")}}
-               </p>
+               <ul class="nav nav-tabs header-tabs">
+                  <li class="nav-item">
+                     <a class="nav-link text-right">
+                        <h6 class="header-pretitle text-secondary-light">
+                           {{utrans("headers.amountDue")}}
+                        </h6>
+                        <h3 class="text-white mb-0">
+                           {{Formatter::currency($values['amount_due'])}}
+                        </h3>
+                     </a>
+                  </li>
+               </ul>
             </div>
          </div>
          <!-- / .row -->
