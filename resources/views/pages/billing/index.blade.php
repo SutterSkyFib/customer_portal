@@ -31,10 +31,10 @@
                            {{ utrans("headers.information") }}
                      </h6>
                      <p class="text-white mb-0">
-                           Account Number: {{ $accountDetails }}
+                           {{ utrans("headers.accountDetails") }}
                      </p>
                      <p class="text-white mb-0">
-                           Account Address: {{ $values['line1'] }}
+                           {{ utrans ("billing.accountNumber") }}
                      </p>
                   </li>
                </ul>
