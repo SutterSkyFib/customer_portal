@@ -27,15 +27,14 @@
                <!-- Nav -->
                <ul class="nav nav-tabs header-tabs">
                   <li class="nav-item">
-                     <h6 class="header-pretitle text-secondary-light">
-                           {{ utrans("headers.information") }}
-                     </h6>
-                     <p class="text-white mb-0">
-                           {{ utrans("headers.accountDetails") }}
-                     </p>
-                     <p class="text-white mb-0">
-                           {{ utrans ("billing.accountNumber") }}
-                     </p>
+                     <a class="nav-link text-right">
+                        <h6 class="header-pretitle text-secondary-light">
+                           {{utrans("headers.information")}}
+                        </h6>
+                        <h5 class="text-white mb-0">
+                           <!-- Account number: {{ $accountDetails->account_number }} -->
+                        </h5>
+                     </a>
                   </li>
                </ul>
             </div>

@@ -68,6 +68,7 @@ class BillingController extends Controller
             + round($policyDetails->purchased_top_off_total_in_bytes / 1000 ** 3, 2);
 
         $values = [
+            //'account_identity' => $accountDetails,
             'amount_due' => $billingDetails->balance_due,
             'next_bill_date' => $billingDetails->next_bill_date,
             'next_bill_amount' => $billingDetails->next_recurring_charge_amount,
@@ -110,7 +111,7 @@ class BillingController extends Controller
 
         return view(
             'pages.billing.index',
-            compact('values', 'invoices', 'transactions', 'paymentMethods', 'systemSetting', 'svg', 'svgDisplay')
+            compact('values', 'invoices', 'transactions', 'paymentMethods', 'systemSetting', 'svg', 'svgDisplay', 'accountDetails')
         );
     }
 

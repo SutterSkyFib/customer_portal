@@ -34,4 +34,5 @@ return [
     'autopay' => 'Autopay',
     'goCardLess' => 'GoCardless',
     'information' => 'Information',
+    //'accountIdentity' => 'Account Number',
 ];
