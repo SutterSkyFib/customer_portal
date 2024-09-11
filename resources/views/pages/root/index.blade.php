@@ -29,7 +29,7 @@
             <div class="right"><a href="/reset" class="forgot">{{trans("headers.forgotUsernameOrPassword",[],$language)}}</a></div>
          </div>
          {!! Form::close() !!}
-         <small><a href="{{action([\App\Http\Controllers\AuthenticationController::class, 'showRegistrationForm'])}}">{{trans("root.register",[],$language)}}</a></small>
+         <small><strong><a href="{{action([\App\Http\Controllers\AuthenticationController::class, 'showRegistrationForm'])}}" style="font-size: 18px;">{{trans("root.register",[],$language)}}</a></strong></small>
          <form class="form-group">
             <select id="language" name="language" class="form-control languageSelector">
             @foreach(getAvailableLanguages($language) as $key => $value)

@@ -31,6 +31,10 @@ use SonarSoftware\CustomerPortalFramework\Helpers\CreditCardValidator;
 use SonarSoftware\CustomerPortalFramework\Models\BankAccount;
 use SonarSoftware\CustomerPortalFramework\Models\CreditCard;
 use SonarSoftware\CustomerPortalFramework\Models\TokenizedCreditCard;
+use SonarSoftware\CustomerPortalFramework\Controllers\ContactController;
+use SonarSoftware\CustomerPortalFramework\Models\Contact;
+
+// use App\Services\SonarGraphQLClient;
 
 class BillingController extends Controller
 {
@@ -52,7 +56,9 @@ class BillingController extends Controller
 
     public function index(): Factory|View
     {
-        $accountDetails = $this->accountController->getAccountDetails(get_user()->account_id);
+        $user = get_user();
+        $contact = $this->getContact();
+        $accountDetails = $this->accountController->getAccountDetails($user->account_id);
         $billingDetails = $this->getAccountBillingDetails();
         $invoices = $this->getInvoices();
         $invoices = $this->paginate($invoices, 5, false, ['path' => '/portal/billing/invoices']);
@@ -68,7 +74,6 @@ class BillingController extends Controller
             + round($policyDetails->purchased_top_off_total_in_bytes / 1000 ** 3, 2);
 
         $values = [
-            //'account_identity' => $accountDetails,
             'amount_due' => $billingDetails->balance_due,
             'next_bill_date' => $billingDetails->next_bill_date,
             'next_bill_amount' => $billingDetails->next_recurring_charge_amount,
@@ -111,8 +116,22 @@ class BillingController extends Controller
 
         return view(
             'pages.billing.index',
-            compact('values', 'invoices', 'transactions', 'paymentMethods', 'systemSetting', 'svg', 'svgDisplay', 'accountDetails')
+            compact('values', 'invoices', 'transactions', 'paymentMethods', 'systemSetting', 'svg', 'svgDisplay', 'user', 'contact', 'accountDetails', 'billingDetails')
         );
+    }
+
+    /**
+     * Get contact information for the current user
+     */
+    private function getContact(): Contact
+    {
+        if (! Cache::tags('profile.details')->has(get_user()->contact_id)) {
+            $contactController = new ContactController();
+            $contact = $contactController->getContact(get_user()->contact_id, get_user()->account_id);
+            Cache::tags('profile.details')->put(get_user()->contact_id, $contact, Carbon::now()->addMinutes(10));
+        }
+
+        return Cache::tags('profile.details')->get(get_user()->contact_id);
     }
 
     /**
@@ -139,6 +158,8 @@ class BillingController extends Controller
      */
     public function makePayment(): Factory|View|RedirectResponse
     {
+        $user = get_user();
+        $contact = $this->getContact();
         $billingDetails = $this->getAccountBillingDetails();
         $paymentMethods = $this->generatePaymentMethodListForPaymentPage();
         if (count($paymentMethods) == 0) {
@@ -157,7 +178,7 @@ class BillingController extends Controller
             );
         }
 
-        return view('pages.billing.make_payment', compact('billingDetails', 'paymentMethods'));
+        return view('pages.billing.make_payment', compact('billingDetails', 'paymentMethods', 'user', 'contact'));
     }
 
     /**
@@ -308,6 +329,9 @@ class BillingController extends Controller
      */
     public function createPaymentMethod($type): Factory|View|RedirectResponse
     {
+        $user = get_user();
+        $contact = $this->getContact();
+
         switch ($type) {
             case 'credit_card':
                 if (config('customer_portal.stripe_enabled') == 1) {
@@ -319,7 +343,7 @@ class BillingController extends Controller
                         'key' => $systemSettings->stripe_public_api_key,
                     ]);
                 } else {
-                    return view('pages.billing.add_card');
+                    return view('pages.billing.add_card', compact('user', 'contact'));
                 }
 
             case 'bank':
@@ -328,8 +352,9 @@ class BillingController extends Controller
 
                     return Redirect::away($gocardless->createRedirect());
                 } else {
-                    return view('pages.billing.add_bank');
+                    return view('pages.billing.add_bank', compact('user', 'contact'));
                 }
+                
 
             default:
                 return redirect()->back()->withErrors(utrans('errors.invalidPaymentMethodType'));
@@ -876,4 +901,23 @@ class BillingController extends Controller
     {
         return str_replace('https://', '', str_replace('http://', '', $url));
     }
+
+    // static function getServiceAbleAddress($id)
+    // {
+    //     // Initialize the SonarGraphQLClient
+    //     $sonarClient = new SonarGraphQLClient();
+
+    //     // Fetch the serviceable address using the provided contact ID
+    //     $serviceableAddress = $sonarClient->getServiceAbleAddress($id);
+
+    //     // Check if the response contains the addressLine1 and extract it
+    //     if (isset($serviceableAddress['data']['serviceableAddress']['addressLine1'])) {
+    //         $addressLine1 = $serviceableAddress['data']['serviceableAddress']['addressLine1'];
+    //     } else {
+    //         $addressLine1 = 'Not available';
+    //     }
+
+    //     // Return the addressLine1 as a string
+    //     return $addressLine1;
+    // }
 }

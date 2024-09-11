@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\View\Factory;
 use Illuminate\View\View;
 use SonarSoftware\CustomerPortalFramework\Controllers\DataUsageController as FrameworkDataUsageController;
+use SonarSoftware\CustomerPortalFramework\Models\Contact;
 
 class DataUsageController extends Controller
 {
@@ -25,6 +26,8 @@ class DataUsageController extends Controller
 
     public function index(): Factory|View
     {
+        $user = get_user();
+        $contact = getContact();
         $historicalUsage = $this->getHistoricalUsage();
         $policyDetails = $this->getPolicyDetails();
         $currentUsage = $historicalUsage ? $historicalUsage[0] : [];
@@ -40,7 +43,7 @@ class DataUsageController extends Controller
 
         return view(
             'pages.data_usage.index',
-            compact('historicalUsage', 'policyDetails', 'currentUsage', 'calculatedCap', 'usagePercentage')
+            compact('historicalUsage', 'policyDetails', 'currentUsage', 'calculatedCap', 'usagePercentage', 'user', 'contact')
         );
     }
 
@@ -49,12 +52,14 @@ class DataUsageController extends Controller
      */
     public function showTopOff(): Factory|View|RedirectResponse
     {
+        $user = get_user();
+        $contact = $this->getContact();
         $policyDetails = $this->getPolicyDetails();
         if ($policyDetails->allow_user_to_purchase_capacity !== true) {
             return redirect()->back()->withErrors(utrans('errors.topOffNotAvailable'));
         }
 
-        return view('pages.data_usage.add_top_off', compact('policyDetails'));
+        return view('pages.data_usage.add_top_off', compact('policyDetails', 'user', 'contact'));
     }
 
     /**
@@ -153,5 +158,19 @@ class DataUsageController extends Controller
         Cache::tags('usage_based_billing_policy_details')->forget(get_user()->account_id);
         $billingController = new BillingController();
         $billingController->clearBillingCache();
+    }
+
+    /**
+     * Get contact information for the current user
+     */
+    private function getContact(): Contact
+    {
+        if (! Cache::tags('profile.details')->has(get_user()->contact_id)) {
+            $contactController = new ContactController();
+            $contact = $contactController->getContact(get_user()->contact_id, get_user()->account_id);
+            Cache::tags('profile.details')->put(get_user()->contact_id, $contact, Carbon::now()->addMinutes(10));
+        }
+
+        return Cache::tags('profile.details')->get(get_user()->contact_id);
     }
 }

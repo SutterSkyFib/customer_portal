@@ -14,6 +14,7 @@ use Illuminate\View\View;
 use SonarSoftware\CustomerPortalFramework\Controllers\AccountTicketController;
 use SonarSoftware\CustomerPortalFramework\Exceptions\ApiException;
 use SonarSoftware\CustomerPortalFramework\Models\Ticket;
+use SonarSoftware\CustomerPortalFramework\Models\Contact;
 
 class TicketController extends Controller
 {
@@ -23,8 +24,10 @@ class TicketController extends Controller
     public function index(): Factory|View
     {
         $tickets = $this->getTickets();
+        $user = get_user();
+        $contact = $this->getContact();
 
-        return view('pages.tickets.index', compact('tickets'));
+        return view('pages.tickets.index', compact('tickets', 'user', 'contact'));
     }
 
     /**
@@ -37,6 +40,9 @@ class TicketController extends Controller
         foreach ($tickets as $ticket) {
             try {
                 if ($ticket->getTicketID() == $id) {
+                    $user = get_user();
+                    $contact = $this->getContact();
+                    
                     $accountTicketController = new AccountTicketController();
                     $replies = $accountTicketController->getReplies($ticket, 1);
                     /*
@@ -45,7 +51,7 @@ class TicketController extends Controller
                      */
                     $this->clearTicketCache();
 
-                    return view('pages.tickets.show', compact('replies', 'ticket'));
+                    return view('pages.tickets.show', compact('replies', 'ticket', 'user', 'contact'));
                 }
             } catch (ApiException $e) {
                 Log::error($e->getMessage());
@@ -58,6 +64,20 @@ class TicketController extends Controller
         }
 
         return redirect()->action([TicketController::class, 'index'])->withErrors(utrans('errors.invalidTicketID'));
+    }
+
+    /**
+     * Get contact information for the current user (similar to ProfileController)
+     */
+    protected function getContact(): Contact
+    {
+        if (! Cache::tags('profile.details')->has(get_user()->contact_id)) {
+            $contactController = new ContactController();
+            $contact = $contactController->getContact(get_user()->contact_id, get_user()->account_id);
+            Cache::tags('profile.details')->put(get_user()->contact_id, $contact, Carbon::now()->addMinutes(10));
+        }
+
+        return Cache::tags('profile.details')->get(get_user()->contact_id);
     }
 
     /**

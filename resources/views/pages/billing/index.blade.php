@@ -32,7 +32,7 @@
                            {{utrans("headers.information")}}
                         </h6>
                         <h5 class="text-white mb-0">
-                           <!-- Account number: {{ $accountDetails->account_number }} -->
+                           <p>Account number: {{ $contact->getAccountID() }}</p>
                         </h5>
                      </a>
                   </li>
