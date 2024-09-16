@@ -4,7 +4,7 @@ return [
     'login' => 'Login',
     'makePayment' => 'Make Payment',
     'createTicket' => 'Create Ticket',
-    'lookupEmail' => 'Look Up Email Address',
+    'lookupEmail' => 'Link Account',
     'createAccount' => 'Create Account',
     'sendResetEmail' => 'Send Reset Email',
     'postReply' => 'Post a Reply',
