@@ -15,9 +15,9 @@
          <div class="row align-items-end">
             <div class="col">
                <!-- Pretitle -->
-               <h6 class="header-pretitle text-secondary-light">
+               <h5 class="header-pretitle text-secondary-light">
                   {{utrans("headers.summary")}}
-               </h6>
+               </h5>
                <!-- Title -->
                <h1 class="header-title text-white">
                   {{utrans("headers.dashboard")}}
@@ -28,12 +28,12 @@
                <ul class="nav nav-tabs header-tabs">
                   <li class="nav-item">
                      <a class="nav-link text-right">
-                        <h6 class="header-pretitle text-secondary-light">
+                        <h5 class="header-pretitle text-secondary-light">
                            {{utrans("headers.information")}}
-                        </h6>
-                        <h5 class="text-white mb-0">
-                           <p>Account number: {{ $contact->getAccountID() }}</p>
                         </h5>
+                        <h3 class="text-white mb-0">
+                           <p><span class='fe fe-map-pin mr-3'></span>{{ $account->getLine1() . ', ' . $account->getCity() . ', ' . $account->getState()}}</p>
+                        </h3>
                      </a>
                   </li>
                </ul>

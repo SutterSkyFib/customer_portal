@@ -34,8 +34,6 @@ use SonarSoftware\CustomerPortalFramework\Models\TokenizedCreditCard;
 use SonarSoftware\CustomerPortalFramework\Controllers\ContactController;
 use SonarSoftware\CustomerPortalFramework\Models\Contact;
 
-// use App\Services\SonarGraphQLClient;
-
 class BillingController extends Controller
 {
     use ListsPaymentMethods;
@@ -59,6 +57,7 @@ class BillingController extends Controller
         $user = get_user();
         $contact = $this->getContact();
         $accountDetails = $this->accountController->getAccountDetails($user->account_id);
+        $account = $this->getUserAccount();
         $billingDetails = $this->getAccountBillingDetails();
         $invoices = $this->getInvoices();
         $invoices = $this->paginate($invoices, 5, false, ['path' => '/portal/billing/invoices']);
@@ -116,7 +115,7 @@ class BillingController extends Controller
 
         return view(
             'pages.billing.index',
-            compact('values', 'invoices', 'transactions', 'paymentMethods', 'systemSetting', 'svg', 'svgDisplay', 'user', 'contact', 'accountDetails', 'billingDetails')
+            compact('values', 'invoices', 'transactions', 'paymentMethods', 'systemSetting', 'svg', 'svgDisplay', 'user', 'contact', 'accountDetails', 'billingDetails', 'account')
         );
     }
 
@@ -132,6 +131,32 @@ class BillingController extends Controller
         }
 
         return Cache::tags('profile.details')->get(get_user()->contact_id);
+    }
+
+    /**
+     * Get the authenticated user's account.
+     *
+     * @return mixed
+     */
+    private function getUserAccount()
+    {
+        // Get the authenticated user
+        $user = get_user();  // Or auth()->user() if you're using Laravel auth
+
+        if (!$user) {
+            // Handle the case when the user is not authenticated
+            Log::error('User is null in getUserAccount method.');
+            return null;
+        }
+
+        try {
+            // Retrieve the account using the user's account_id
+            return $this->accountController->getAccount($user->account_id);
+        } catch (\Exception $e) {
+            // Log any exceptions and return null
+            Log::error('Failed to retrieve account: ' . $e->getMessage());
+            return null;
+        }
     }
 
     /**
@@ -160,6 +185,7 @@ class BillingController extends Controller
     {
         $user = get_user();
         $contact = $this->getContact();
+        $account = $this->getUserAccount();
         $billingDetails = $this->getAccountBillingDetails();
         $paymentMethods = $this->generatePaymentMethodListForPaymentPage();
         if (count($paymentMethods) == 0) {
@@ -178,7 +204,7 @@ class BillingController extends Controller
             );
         }
 
-        return view('pages.billing.make_payment', compact('billingDetails', 'paymentMethods', 'user', 'contact'));
+        return view('pages.billing.make_payment', compact('billingDetails', 'paymentMethods', 'user', 'contact', 'account'));
     }
 
     /**
@@ -902,22 +928,4 @@ class BillingController extends Controller
         return str_replace('https://', '', str_replace('http://', '', $url));
     }
 
-    // static function getServiceAbleAddress($id)
-    // {
-    //     // Initialize the SonarGraphQLClient
-    //     $sonarClient = new SonarGraphQLClient();
-
-    //     // Fetch the serviceable address using the provided contact ID
-    //     $serviceableAddress = $sonarClient->getServiceAbleAddress($id);
-
-    //     // Check if the response contains the addressLine1 and extract it
-    //     if (isset($serviceableAddress['data']['serviceableAddress']['addressLine1'])) {
-    //         $addressLine1 = $serviceableAddress['data']['serviceableAddress']['addressLine1'];
-    //     } else {
-    //         $addressLine1 = 'Not available';
-    //     }
-
-    //     // Return the addressLine1 as a string
-    //     return $addressLine1;
-    // }
 }

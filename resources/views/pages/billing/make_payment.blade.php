@@ -143,21 +143,21 @@
                      {{utrans("billing.amountToPay")}}
                   </label>
                   <!-- Input -->
-                  {!! Form::number("amount",number_format($billingDetails->balance_due,2,".",""),['id' => 'amount', 'class' => 'form-control', 'placeholder' => utrans("billing.amountToPay--placeholder"), 'step' => 'any', 'required' => true]) !!}
+                  {!! Form::number("amount", null,['id' => 'amount', 'class' => 'form-control', 'placeholder' => utrans("Amount to Pay"), 'step' => 'any', 'required' => true]) !!}
                </div>
             </div>
-            <div class="col-auto ">
+            <div class="d-flex justify-content-between align-items-center" style="padding: 0px 12px;">
                <!-- Toggle -->
-               <div class="custom-control custom-checkbox-toggle mt-1 new_card">
-                  {!! Form::checkbox("makeAuto",1,false,['id' => 'makeAuto', 'class' => 'custom-control-input']) !!}
+               <div class="custom-control custom-checkbox-toggle new_card">
+                  {!! Form::checkbox("makeAuto", 1, false, ['id' => 'makeAuto', 'class' => 'custom-control-input']) !!}
                   <label class="custom-control-label" for="makeAuto"></label>
                </div>
-            </div>
-            <div class="col mt-1">
                <!-- Help text -->
-               <small class="text-muted new_card">
-                  {{utrans("billing.saveAsAutoPayMethod")}} {{utrans("billing.autoPayDescription")}}
-               </small>
+               <div class="ml-3">
+                  <h4 class="text-dark new_card mb-0">
+                     {{utrans("billing.enableAuto")}}
+                  </h4>
+               </div>
             </div>
             <div class="col-12 col-md-12 mt-5">
                <input type="hidden" name="payment_tracker_id" value="{{uniqid("", true)}}" />
