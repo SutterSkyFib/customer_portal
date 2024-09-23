@@ -13,8 +13,10 @@
             <h1 class="header-title">
             {{utrans("headers.tickets")}}
             </h1>
-         </div>
-         <div class="col-auto">
+         </div>   
+      </div>
+      <div class="col-12 px-0 my-3">
+         <div class="col-auto ticket-btn px-0">
             <!-- Button -->
             <a class="btn btn-primary" href="{{action([\App\Http\Controllers\TicketController::class, 'create'])}}" role="button">
             {{utrans("tickets.createNewTicket")}} <span class="fe fe-edit-2"></span> 

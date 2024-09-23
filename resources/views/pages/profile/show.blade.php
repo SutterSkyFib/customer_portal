@@ -98,21 +98,21 @@
                      @endif
                   </div>
                </div>
-               <div class="col-12 col-md-6">
-                  <!-- Phone -->
+               <!-- <div class="col-12 col-md-6">
+                  
                   <div class="form-group">
-                     <!-- Label -->
+                   
                      <label>
                         {{utrans("profile.fax")}}
                      </label>
-                     <!-- Input -->
+                
                      @if($country === 'US')
                      {!! Form::tel("fax",$phoneNumbers[\SonarSoftware\CustomerPortalFramework\Models\PhoneNumber::FAX],['id' => 'fax', 'class' => 'form-control mb-3','data-mask' => '(000) 000-0000', 'placeholder' => utrans("profile.fax--placeholder")]) !!}
                      @else
                      {!! Form::tel("fax",$phoneNumbers[\SonarSoftware\CustomerPortalFramework\Models\PhoneNumber::FAX],['id' => 'fax', 'class' => 'form-control mb-3','placeholder' => utrans("profile.fax--placeholder")]) !!}
                      @endif
                   </div>
-               </div>
+               </div> -->
                <div class="col-12 com-md-12">
                   <button type="submit" class="btn btn-outline-primary">
                      {{utrans("profile.updateDetails")}}

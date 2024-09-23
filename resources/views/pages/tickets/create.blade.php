@@ -11,21 +11,27 @@
                         {{utrans("tickets.createNewTicket")}}
                      </h6>
                      <h1 class="header-title">
-                      {{utrans("headers.tickets")}}
+                        {{utrans("headers.tickets")}}
                      </h1>
-                  </div>
-                  <div class="col-auto">
-                  </div>
-               </div>
-               <div class="row align-items-center">
-                  <div class="col">
                   </div>
                </div>
             </div>
          </div>
          <div class="card">
             <div class="card-body">
-               {!! Form::open(['action' => '\App\Http\Controllers\TicketController@store', 'id' => 'ticketForm']) !!}
+               {!! Form::open(['action' => '\App\Http\Controllers\TicketController@store', 'id' => 'ticketForm']) !!}             
+               <!-- Department Selection -->
+               <div class="form-group">
+                  <label for="department">{{ utrans("tickets.department") }}</label>
+                  {!! Form::select('department', [
+                     '1' => 'Sales Team',
+                     '2' => 'Support Team',
+                     '3' => 'Billing Team',
+                     '8' => 'Cancellation Team',
+                  ], null, ['class' => 'form-control', 'id' => 'department', 'required' => 'required', 'placeholder' => ""]) !!}
+               </div>
+
+               <!-- Subject Input -->
                <div class="form-group">
                   <label for="subject">{{utrans("tickets.subject")}}</label>
                   <div class="input-group input-group-merge">
@@ -37,6 +43,7 @@
                      </div>
                   </div>
                </div>
+               <!-- Description Input -->
                <div class="form-group">
                   <label for="description">{{utrans("tickets.description")}}</label>
                   {!! Form::textarea("description",null,['class' => 'form-control', 'id' => 'description', 'placeholder' => utrans("tickets.descriptionLong")]) !!}
@@ -47,8 +54,6 @@
          </div>
       </div>
    </div>
-</div>
-</div>
 </div>
 @endsection
 @section('additionalJS')

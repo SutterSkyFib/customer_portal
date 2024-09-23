@@ -23,4 +23,5 @@ return [
     'beAsDetailed' => 'Be as detailed as possible',
     'includeRelevantInfo' => 'Include any relevant information',
     'neverAskForCredit' => 'Remember that we will never ask for your password or credit card info',
+    'department' => 'Select Department'
 ];

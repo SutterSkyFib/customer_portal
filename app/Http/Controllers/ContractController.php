@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 use SonarSoftware\CustomerPortalFramework\Models\Contact;
+use Illuminate\Support\Facades\Cache;
 
 class ContractController extends Controller
 {

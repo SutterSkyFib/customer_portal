@@ -67,7 +67,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Get contact information for the current user (similar to ProfileController)
+     * Get contact information for the current user
      */
     protected function getContact(): Contact
     {
@@ -86,13 +86,15 @@ class TicketController extends Controller
     public function create(): Factory|View|RedirectResponse
     {
         $emailAddress = get_user()->email_address;
+        $user = get_user();
+        $contact = $this->getContact();
         if ($emailAddress == null) {
             return redirect()
                 ->action([ProfileController::class, 'show'])
                 ->withErrors(utrans('errors.mustSetEmailAddress'));
         }
 
-        return view('pages.tickets.create');
+        return view('pages.tickets.create', compact('user', 'contact'));
     }
 
     /**
@@ -100,28 +102,52 @@ class TicketController extends Controller
      */
     public function store(TicketRequest $request): RedirectResponse
     {
+        // Get the selected department as a single value (not an array)
+        $ticketIDValue = $request->input('department');
+        $inbound_email_id = null;
+
+        // Map the selected department to the corresponding inbound email account ID
+        switch ($ticketIDValue) {
+            case 1:
+                $inbound_email_id = 2;
+                break;
+            case 2:
+                $inbound_email_id = 3;
+                break;
+            case 3:
+                $inbound_email_id = 6;
+                break;
+            case 8:
+                $inbound_email_id = 7;
+                break;
+            default:
+                // Handle unexpected values
+                Log::warning("Unexpected department ID: $ticketIDValue");
+                return redirect()->back()->withErrors(utrans('errors.invalidDepartment'))->withInput();
+        }
+
         try {
+            // Create a new ticket instance with the input data
             $ticket = new Ticket([
                 'account_id' => get_user()->account_id,
                 'email_address' => get_user()->email_address,
                 'subject' => $request->input('subject'),
                 'description' => $request->input('description'),
-                'ticket_group_id' => config('customer_portal.ticket_group_id'),
+                'ticket_group_id' => $ticketIDValue,
+                'inbound_email_account_id' => $inbound_email_id,
                 'priority' => config('customer_portal.ticket_priority'),
-                'inbound_email_account_id' => config('customer_portal.inbound_email_account_id'),
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-
             return redirect()->back()->withErrors(utrans('errors.failedToCreateTicket'))->withInput();
         }
 
         $accountTicketController = new AccountTicketController();
         try {
+            // Create the ticket using the account ticket controller
             $accountTicketController->createTicket($ticket, get_user()->contact_name, get_user()->email_address);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-
             return redirect()->back()->withErrors(utrans('errors.failedToCreateTicket'))->withInput();
         }
 
@@ -132,6 +158,7 @@ class TicketController extends Controller
             ->with('success', utrans('tickets.ticketCreated'));
     }
 
+    
     /**
      * Post a reply to a ticket
      */
