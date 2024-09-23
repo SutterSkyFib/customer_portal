@@ -90,10 +90,10 @@
                      <h2 class="mb-4 mt-4">
                         {{utrans("headers.allPaid")}}
                      </h2>
-                     <!-- Button -->
+                     <!-- Button
                      <a href="{{action([\App\Http\Controllers\BillingController::class, 'makePayment'])}}" class="btn btn-white">
                         {{utrans("billing.makePayment")}}
-                     </a>
+                     </a> -->
                   </div>
                </div>
                <!-- / .row -->

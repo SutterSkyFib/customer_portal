@@ -12,6 +12,7 @@
                      </h6>
                      <h1 class="header-title">
                         {{utrans("headers.tickets")}}
+                        {{utrans("headers.tickets")}}
                      </h1>
                   </div>
                </div>
@@ -44,12 +45,17 @@
                   </div>
                </div>
                <!-- Description Input -->
+               <!-- Description Input -->
                <div class="form-group">
                   <label for="description">{{utrans("tickets.description")}}</label>
                   {!! Form::textarea("description",null,['class' => 'form-control', 'id' => 'description', 'placeholder' => utrans("tickets.descriptionLong")]) !!}
                </div>
                <button type="submit" class="btn btn-outline-primary">{{utrans("actions.createTicket")}}</button>
                {!! Form::close() !!}
+            </div>
+         </div>
+      </div>
+   </div>
             </div>
          </div>
       </div>

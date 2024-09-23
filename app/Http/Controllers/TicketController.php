@@ -68,6 +68,7 @@ class TicketController extends Controller
 
     /**
      * Get contact information for the current user
+     * Get contact information for the current user
      */
     protected function getContact(): Contact
     {
@@ -95,11 +96,12 @@ class TicketController extends Controller
         }
 
         return view('pages.tickets.create', compact('user', 'contact'));
+        return view('pages.tickets.create', compact('user', 'contact'));
     }
 
     /**
-     * Create a new ticket
-     */
+    * Create a new ticket
+    */
     public function store(TicketRequest $request): RedirectResponse
     {
         // Get the selected department as a single value (not an array)
@@ -145,6 +147,7 @@ class TicketController extends Controller
         $accountTicketController = new AccountTicketController();
         try {
             // Create the ticket using the account ticket controller
+            // Create the ticket using the account ticket controller
             $accountTicketController->createTicket($ticket, get_user()->contact_name, get_user()->email_address);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -158,7 +161,6 @@ class TicketController extends Controller
             ->with('success', utrans('tickets.ticketCreated'));
     }
 
-    
     /**
      * Post a reply to a ticket
      */
