@@ -188,6 +188,17 @@ class BillingController extends Controller
         $account = $this->getUserAccount();
         $billingDetails = $this->getAccountBillingDetails();
         $paymentMethods = $this->generatePaymentMethodListForPaymentPage();
+
+        $values = [
+            'amount_due' => $billingDetails->balance_due,
+            'next_bill_date' => $billingDetails->next_bill_date,
+            'next_bill_amount' => $billingDetails->next_recurring_charge_amount,
+            'total_balance' => $billingDetails->total_balance,
+            'available_funds' => $billingDetails->available_funds,
+            'payment_past_due' => $this->isPaymentPastDue(),
+            'balance_minus_funds' => bcsub($billingDetails->total_balance, $billingDetails->available_funds, 2),
+        ];
+
         if (count($paymentMethods) == 0) {
             return redirect()->back()->withErrors(utrans('errors.addAPaymentMethod'));
         }
@@ -200,11 +211,11 @@ class BillingController extends Controller
 
             return view(
                 'pages.billing.make_payment_stripe',
-                compact('billingDetails', 'paymentMethods', 'secret', 'key')
+                compact('billingDetails', 'paymentMethods', 'secret', 'key', 'values')
             );
         }
 
-        return view('pages.billing.make_payment', compact('billingDetails', 'paymentMethods', 'user', 'contact', 'account'));
+        return view('pages.billing.make_payment', compact('billingDetails', 'paymentMethods', 'user', 'contact', 'account', 'values'));
     }
 
     /**
@@ -347,6 +358,31 @@ class BillingController extends Controller
             }
         }
 
+        return redirect()->back()->withErrors(utrans('errors.paymentMethodNotFound'));
+    }
+
+    public function showMakePaymentForm($paymentMethodId)
+    {
+        $accountId = get_user()->account_id;
+
+        // Get all payment methods for the account
+        $paymentMethods = $this->getPaymentMethods();
+
+        // Find the specific payment method by ID
+        foreach ($paymentMethods as $paymentMethod) {
+            if ((int) $paymentMethod->id === (int) $paymentMethodId) {
+                // Get the existing auto-pay setting for this payment method
+                $existingAutoSetting = (bool) $paymentMethod->auto;
+
+                // Pass the payment method and its auto-pay setting to the view
+                return view('make_payment', [
+                    'paymentMethod' => $paymentMethod,
+                    'autoPayEnabled' => $existingAutoSetting,
+                ]);
+            }
+        }
+
+        // If payment method not found, return an error
         return redirect()->back()->withErrors(utrans('errors.paymentMethodNotFound'));
     }
 

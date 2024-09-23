@@ -37,6 +37,18 @@
                <i class="fe fe-message-circle"></i> {{utrans("nav.tickets")}}</a>
             </li>
             @endif
+            @if(config("customer_portal.data_usage_enabled") === true)
+            <li class="nav-item">
+               <a @if(str_contains(Route::getCurrentRoute()->uri(),"data_usage")) class="nav-link selected" @else class="nav-link" @endif href="{{action([\App\Http\Controllers\DataUsageController::class, 'index'])}}">
+               <i class="fe fe-activity"></i> {{utrans("nav.dataUsage")}}</a>
+            </li>
+            @endif
+            @if(config("customer_portal.contracts_enabled") === true)
+            <li class="nav-item">
+               <a @if(str_contains(Route::getCurrentRoute()->uri(),"contracts")) class="nav-link selected" @else class="nav-link" @endif href="{{action([\App\Http\Controllers\ContractController::class, 'index'])}}">
+               <i class="fe fe-package"></i> {{utrans("nav.contracts")}}</a>
+            </li>
+            @endif
          </ul>
          <h6 class="navbar-heading text-muted mt-4">
             {{utrans("nav.myAccount")}}

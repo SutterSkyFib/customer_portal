@@ -23,8 +23,7 @@
                   {{utrans("headers.dashboard")}}
                </h1>
             </div>
-            <div class="col-auto">
-               <!-- Nav -->
+            <!-- <div class="col-auto">
                <ul class="nav nav-tabs header-tabs">
                   <li class="nav-item">
                      <a class="nav-link text-right">
@@ -37,7 +36,7 @@
                      </a>
                   </li>
                </ul>
-            </div>
+            </div> -->
          </div>
          <!-- / .row -->
       </div>
@@ -51,7 +50,7 @@
 <div class="container-fluid mt--6">
    <div class="row">
       <div class="col-12 col-xl-4">
-         @if($values['amount_due'] > 0)
+         @if($values['amount_due'] - $values['next_bill_amount'] > 0)
          <div class="card">
             <div class="card-body text-center">
                <div class="row justify-content-center">
@@ -65,9 +64,10 @@
                         {{utrans("headers.amountDue")}}
                      </h2>
                      <!-- Content -->
-                     <p class="text-muted">
-                        {{Formatter::currency($values['amount_due'])}}
-                     </p>
+                     <h3>
+                        <!-- Current Balance Due -->
+                        {{Formatter::currency($values['amount_due'] - $values['next_bill_amount'])}}
+                     </h3>
                      <!-- Button -->
                      <a href="{{action([\App\Http\Controllers\BillingController::class, 'makePayment'])}}" class="btn btn-white">
                         {{utrans("billing.makePayment")}}
@@ -90,10 +90,10 @@
                      <h2 class="mb-4 mt-4">
                         {{utrans("headers.allPaid")}}
                      </h2>
-                     <!-- Button -->
+                     <!-- Button
                      <a href="{{action([\App\Http\Controllers\BillingController::class, 'makePayment'])}}" class="btn btn-white">
                         {{utrans("billing.makePayment")}}
-                     </a>
+                     </a> -->
                   </div>
                </div>
                <!-- / .row -->
@@ -103,20 +103,24 @@
       </div>
       <div class="col-12 col-xl-8">
          <div class="row">
+            <!-- Outstanding Balance -->
             <div class="col-12 col-xl-6">
                <div class="card">
                   <div class="card-body">
                      <div class="row align-items-center">
                         <div class="col">
                            <h6 class="card-title text-uppercase text-muted mb-2">
-                              {{utrans("billing.totalBalance")}}
+                              {{utrans("billing.nextBillAmount")}}
                            </h6>
                            <span class="h2 mb-0">
-                              {{Formatter::currency($values['balance_minus_funds'])}}
+                              @if($values['next_bill_amount'] !== null)
+                              {{Formatter::currency($values['amount_due'])}}
+                              @else
+                              {{utrans("general.notAvailable")}}
+                              @endif
                            </span>
                         </div>
                         <div class="col-auto">
-                           <!-- Icon -->
                            <span class="h2 fe fe-dollar-sign text-muted mb-0"></span>
                         </div>
                      </div>
@@ -143,7 +147,7 @@
             </div>
             <div></div>
             <div class="col-12 col-xl-12">
-               <div class="row">
+               <!-- <div class="row">
                   <div class="col-12 col-xl-6">
                      <div class="card">
                         <div class="card-body">
@@ -161,7 +165,6 @@
                                  </span>
                               </div>
                               <div class="col-auto">
-                                 <!-- Icon -->
                                  <span class="h2 fe fe-dollar-sign text-muted mb-0"></span>
                               </div>
                            </div>
@@ -174,37 +177,31 @@
                         <div class="card-body">
                            <div class="row align-items-center">
                               <div class="col">
-                                 <!-- Title -->
                                  <h6 class="card-title text-uppercase text-muted mb-2">
                                     {{utrans("headers.currentDataUsage")}}
                                  </h6>
                                  <div class="row align-items-center no-gutters">
                                     <div class="col-auto">
-                                       <!-- Heading -->
                                        <span class="h2 mr-2 mb-0">
                                           {{$values["currentUsage"]["billable"]}}GB
                                        </span>
                                     </div>
                                     <div class="col">
-                                       <!-- Progress -->
                                        <div class="progress progress-sm">
                                           <div id="usage-progressbar" class="progress-bar" role="progressbar" aria-valuenow="{{$values["currentUsage"]["billable"]}}" aria-valuemin="0" aria-valuemax="100"></div>
                                        </div>
                                     </div>
                                  </div>
-                                 <!-- / .row -->
                               </div>
                               <div class="col-auto">
-                                 <!-- Icon -->
                                  <span class="h2 fe fe-activity text-muted mb-0"></span>
                               </div>
                            </div>
-                           <!-- / .row -->
                         </div>
                      </div>
                   </div>
                   @endif
-               </div>
+               </div> -->
             </div>
          </div>
       </div>
@@ -405,6 +402,19 @@
                </div>
             </div>
             @endif
+         </div>
+         <div class="card">
+            <div class="card-header">
+               <h4 class="card-header-title text-muted">
+                  <i class="fe fe-user mr-3"></i> {{ utrans("headers.information") }}
+               </h4>
+            </div>
+            <div class="card-body">
+                  <p><strong>Account:</strong> {{ $contact->getName() }}</p>
+                  <p><strong>Portal Username:</strong> {{ $contact->getUsername() }}</p>
+                  <p><strong>Serviceable Address:</strong> {{ $account->getLine1() . ', ' . $account->getCity() . ', ' . $account->getState() }}</p>
+                  <p><strong>Email:</strong> {{ $contact->getEmailAddress() }}</p>
+            </div>
          </div>
       </div>
       <div class="col-12 col-md-12 col-xl-6">

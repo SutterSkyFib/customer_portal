@@ -33,7 +33,7 @@
                      {{utrans("billing.paymentMethod")}}
                   </label>
                   <!-- Input -->
-                  {!! Form::select("payment_method",$paymentMethods,'new_card',['id' => 'payment_method', 'class' => 'form-control']) !!}
+                  {!! Form::select("payment_method",$paymentMethods,'',['id' => 'payment_method', 'class' => 'form-control', 'placeholder' => 'Select Payment Method']) !!}
                </div>
             </div>
             <div class="col-12 ">
@@ -139,11 +139,9 @@
                <!-- First name -->
                <div class="form-group">
                   <!-- Label -->
-                  <label>
-                     {{utrans("billing.amountToPay")}}
-                  </label>
+                  {{utrans("billing.amountToPay") . " ". "(Your current balance due:  " . Formatter::currency($values['amount_due'] - $values['next_bill_amount']) . ")"}}
                   <!-- Input -->
-                  {!! Form::number("amount", null,['id' => 'amount', 'class' => 'form-control', 'placeholder' => utrans("Amount to Pay"), 'step' => 'any', 'required' => true]) !!}
+                  {!! Form::number("amount", null,['id' => 'amount', 'class' => 'form-control', 'placeholder' => Formatter::currency($values['amount_due'] - $values['next_bill_amount']), 'step' => 'any', 'required' => true]) !!}
                </div>
             </div>
             <div class="d-flex justify-content-between align-items-center" style="padding: 0px 12px;">
@@ -153,9 +151,9 @@
                   <label class="custom-control-label" for="makeAuto"></label>
                </div>
                <!-- Help text -->
-               <div class="ml-3">
-                  <h4 class="text-dark new_card mb-0">
-                     {{utrans("billing.enableAuto")}}
+               <div class="ml-3 new_card">
+                  <h4 class="text-dark mb-0">
+                     {{utrans("billing.enableAutoFuture")}}
                   </h4>
                </div>
             </div>
@@ -177,4 +175,4 @@
 <script src="/assets/js/pages/billing/payment/page.js"></script>
 <script type="text/javascript" src="/assets/libs/js-validation/jsvalidation.min.js"></script>
 {!! JsValidator::formRequest('App\Http\Requests\CreditCardPaymentRequest','#paymentForm') !!}
-@endsection
+@endsection@endsectio

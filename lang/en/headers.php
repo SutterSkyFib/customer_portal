@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'amountDue' => 'Amount Due',
+    'amountDue' => 'Remaining Amount Due Now',
     'accountDetails' => 'Account Details',
     'recentTransactions' => 'Recent Transactions',
     'invoices' => 'Invoices',
@@ -34,5 +34,4 @@ return [
     'autopay' => 'Autopay',
     'goCardLess' => 'GoCardless',
     'information' => 'Information',
-    //'accountIdentity' => 'Account Number',
 ];

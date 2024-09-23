@@ -5,7 +5,7 @@ return [
     'billing' => 'Billing',
     'myAccount' => 'MY ACCOUNT',
     'profile' => 'My Details',
-    'tickets' => 'Support Tickets',
+    'tickets' => 'Contact Support',
     'dataUsage' => 'Data Usage',
     'contracts' => 'Contracts',
     'myService' => 'MY SERVICE',
