@@ -98,5 +98,5 @@ This portal is built using [Laravel](https://laravel.com/). You are welcome to f
 
 Disable Watchtower through docker-compose.yml.
 
-The [framework](https://github.com/SutterSkyFib/customer_portal_framework) this portal references is forked from [Sonar Customer Portal Framework](https://github.com/SonarSoftware/customer_portal_framework).
+The [framework](https://github.com/SutterSkyFib/customer_portal_framework) this portal references is forked from [Sonar Customer Portal Framework](https://github.com/SonarSoftware/customer_portal_framework). The documentation for the framework is found [here](https://legacy.sonar.software/apidoc/).
 
