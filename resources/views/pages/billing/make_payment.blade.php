@@ -139,9 +139,9 @@
                <!-- First name -->
                <div class="form-group">
                   <!-- Label -->
-                  {{utrans("billing.amountToPay") . " ". "(Your current balance due:  " . Formatter::currency($values['amount_due'] - $values['next_bill_amount']) . ")"}}
+                  {{utrans("billing.amountToPay") . " " . "(Your current balance due: " . Formatter::currency(max(0, $values['amount_due'] - $values['next_bill_amount'])) . ")"}}
                   <!-- Input -->
-                  {!! Form::number("amount", null,['id' => 'amount', 'class' => 'form-control', 'placeholder' => Formatter::currency($values['amount_due'] - $values['next_bill_amount']), 'step' => 'any', 'required' => true]) !!}
+                  {!! Form::number("amount", null,['id' => 'amount', 'class' => 'form-control', 'placeholder' => Formatter::currency(max(0, $values['amount_due'] - $values['next_bill_amount'])), 'step' => 'any', 'required' => true]) !!}
                </div>
             </div>
             <div class="d-flex justify-content-between align-items-center" style="padding: 0px 12px;">

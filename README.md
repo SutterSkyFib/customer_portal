@@ -2,11 +2,11 @@
 
 # Sonar Customer Portal
 
-This is a prebuilt and self-hosted customer portal for [Sonar](https://sonar.software).
+This is a prebuilt and self-hosted customer portal for [Sonar](https://sonar.software). Accommodated for SkyFiber Networks.
 
 ## Quick start
 
-These instructions will get you set up and running with SSL through [LetsEncrypt](https://letsencrypt.org) as well as automatic updates provided by [Watchtower](https://github.com/v2tec/watchtower).
+These instructions will get you set up and running with SSL through [LetsEncrypt](https://letsencrypt.org).
 
 **_If you are a current Sonar customer, and you need assistance with any part of this process, please don't hesitate to reach out to support@sonar.software for help. We are more than happy to help you get your portal setup!_**
 
@@ -22,7 +22,7 @@ Install required packages:
 `sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get -y install git unzip`
 
 Clone the repository:
-`git clone https://github.com/SonarSoftwareInc/customer_portal.git`
+`git clone https://github.com/SutterSkyFib/customer_portal`
 
 Now change directory into the repository that we've just cloned:
 `cd customer_portal`
@@ -94,4 +94,9 @@ Try removing the created storage volume by executing `sudo docker volume rm cust
 
 ## Customizing the portal
 
-This portal is built using [Laravel](https://laravel.com/). You are welcome to fork and modify this repository for your own needs! Do not attempt to customize the files inside the existing Docker container, as they will be automatically overwritten during upgrade. If you need help customizing this portal beyond what is currently available, we recommend [Solutions4Ebiz](https://www.solutions4ebiz.com/) & [SBRConsulting](https://www.sbrconsulting-llc.com/) as experienced third party developers.
+This portal is built using [Laravel](https://laravel.com/). You are welcome to fork and modify this repository for your own needs! Do not attempt to customize the files inside the existing Docker container, as they will be automatically overwritten during upgrade. If you need help customizing this portal beyond what is currently available, good luck! ;D
+
+Disable Watchtower through docker-compose.yml.
+
+The [framework](https://github.com/SutterSkyFib/customer_portal_framework) this portal references is forked from [Sonar Customer Portal Framework](https://github.com/SonarSoftware/customer_portal_framework).
+

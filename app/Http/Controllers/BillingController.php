@@ -89,7 +89,6 @@ class BillingController extends Controller
         $dataServiceId = 0;
         if ($accountDetails->company_id) {
             foreach ($services as $service) {
-                //save a call back to sonar if no label is here to find anyway
                 $trySvgPath = "public/assets/fcclabels/label_" . $service->id . "_" . $accountDetails->company_id . ".svg";
                 if (file_exists(base_path("{$trySvgPath}"))) {
                     $serviceDef = $this->systemController->getService($service->id);
@@ -108,7 +107,7 @@ class BillingController extends Controller
                 $svgDisplay = "none";
                 $svg = "";
             }
-        } else {//must be using v1
+        } else {
             $svgDisplay = "none";
             $svg = "";
         }
@@ -141,19 +140,16 @@ class BillingController extends Controller
     private function getUserAccount()
     {
         // Get the authenticated user
-        $user = get_user();  // Or auth()->user() if you're using Laravel auth
+        $user = get_user();
 
         if (!$user) {
-            // Handle the case when the user is not authenticated
             Log::error('User is null in getUserAccount method.');
             return null;
         }
 
         try {
-            // Retrieve the account using the user's account_id
             return $this->accountController->getAccount($user->account_id);
         } catch (\Exception $e) {
-            // Log any exceptions and return null
             Log::error('Failed to retrieve account: ' . $e->getMessage());
             return null;
         }
