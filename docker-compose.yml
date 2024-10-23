@@ -10,6 +10,7 @@ services:
     tty: true
     ports:
       - "400:400"
+      - "80:80"
       - "443:443"
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
