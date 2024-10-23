@@ -403,11 +403,13 @@
             </div>
             @endif
          </div>
+      </div>
+      <div class="col-12 col-md-12 col-xl-6">
          <div class="card">
             <div class="card-header">
-               <h4 class="card-header-title text-muted">
-                  <i class="fe fe-user mr-3"></i> {{ utrans("headers.information") }}
-               </h4>
+                  <h4 class="card-header-title text-muted">
+                     <i class="fe fe-user mr-3"></i> {{ utrans("headers.information") }}
+                  </h4>
             </div>
             <div class="card-body">
                   <p><strong>Account:</strong> {{ $contact->getName() }}</p>
@@ -416,8 +418,26 @@
                   <p><strong>Email:</strong> {{ $contact->getEmailAddress() }}</p>
             </div>
          </div>
-      </div>
-      <div class="col-12 col-md-12 col-xl-6">
+         @if (count($account->getSubAccounts()) > 0)
+            <div class="card">
+               <div class="card-header">
+                  <h4 class="card-header-title text-muted">
+                     <i class="fe fe-users mr-3"></i> {{ utrans("headers.subAccounts") }}
+                  </h4>
+               </div>
+               <div class="card-body">
+                  @foreach ($account->getSubAccounts() as $subAccount)
+                     <div class="sub-account">
+                           <p><strong>Account:</strong> {{ $subAccount->getName() }}</p>
+                           <p><strong>Serviceable Address:</strong> {{ $subAccount->getLine1() . ', ' . $subAccount->getCity() . ', ' . $subAccount->getState() }}</p>
+                           @if (!$loop->last)
+                              <hr>
+                           @endif
+                     </div>
+                  @endforeach
+               </div>
+            </div>
+         @endif
          <div class="card">
             <div class="card-header">
                <h4 class="card-header-title text-muted">
