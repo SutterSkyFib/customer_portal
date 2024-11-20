@@ -13,7 +13,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
+      - /etc/letsencrypt:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
       - ./public/assets/img/logo.png:/var/www/html/public/assets/img/logo.png
       - ./public/assets/img/cover.png:/var/www/html/public/assets/img/cover.png
@@ -34,7 +34,7 @@ services:
     restart: always
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
+      - /etc/letsencrypt:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
 
   # watchtower:
