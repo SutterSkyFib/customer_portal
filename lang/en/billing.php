@@ -82,5 +82,6 @@ return [
     'bankAccountAdded' => 'Bank account added successfully.',
     'cvc' => 'CVC',
     'cvc--placeholder' => '123',
-    'selectPayment' => 'Select Payment Method'
+    'selectPayment' => 'Select Payment Method',
+    'status' => 'Status',
 ];

@@ -65,6 +65,14 @@ class BillingController extends Controller
         $transactions = $this->paginate($transactions, 5, false, ['path' => '/portal/billing/transaction']);
         $paymentMethods = $this->getPaymentMethods();
 
+        $delinquentAmount = 0;
+
+        foreach ($invoices as $invoice) {
+            if (!empty($invoice->delinquent)) {
+                $delinquentAmount += $invoice->remaining_due ?? 0;
+            }
+        }
+
         $historicalUsage = $this->getHistoricalUsage();
         $policyDetails = $this->getPolicyDetails();
         $currentUsage = $historicalUsage ? $historicalUsage[0] : [];
@@ -73,6 +81,7 @@ class BillingController extends Controller
             + round($policyDetails->purchased_top_off_total_in_bytes / 1000 ** 3, 2);
 
         $values = [
+            'delinquent_amount' => $delinquentAmount,
             'amount_due' => $billingDetails->balance_due,
             'next_bill_date' => $billingDetails->next_bill_date,
             'next_bill_amount' => $billingDetails->next_recurring_charge_amount,
@@ -184,6 +193,7 @@ class BillingController extends Controller
         $account = $this->getUserAccount();
         $billingDetails = $this->getAccountBillingDetails();
         $paymentMethods = $this->generatePaymentMethodListForPaymentPage();
+        $invoices = collect($this->getInvoices());
 
         $values = [
             'amount_due' => $billingDetails->balance_due,
@@ -211,7 +221,7 @@ class BillingController extends Controller
             );
         }
 
-        return view('pages.billing.make_payment', compact('billingDetails', 'paymentMethods', 'user', 'contact', 'account', 'values'));
+        return view('pages.billing.make_payment', compact('billingDetails', 'paymentMethods', 'user', 'contact', 'account', 'values', 'invoices'));
     }
 
     /**

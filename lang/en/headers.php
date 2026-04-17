@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'amountDue' => 'Remaining Amount Due Now',
+    'delinquentAmount' => 'Delinquent Amount',
+    'noDelinquent' => 'Make Payment',
     'accountDetails' => 'Account Details',
     'recentTransactions' => 'Recent Transactions',
     'invoices' => 'Invoices',
@@ -35,4 +36,5 @@ return [
     'goCardLess' => 'GoCardless',
     'information' => 'Information',
     'subAccounts' => 'Sub Accounts',
+    'unpaidInvoices' => 'Unpaid Invoices'
 ];

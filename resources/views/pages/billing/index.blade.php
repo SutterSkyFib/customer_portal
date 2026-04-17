@@ -47,161 +47,102 @@
    </div>
 </div>
 <!-- / .header -->
-<div class="container-fluid mt--6">
-   <div class="row">
-      <div class="col-12 col-xl-4">
-         @if($values['amount_due'] - $values['next_bill_amount'] > 0)
-         <div class="card">
-            <div class="card-body text-center">
-               <div class="row justify-content-center">
-                  <div class="col-12 col-xl-10">
-                     <!-- Image -->
-                     <span class="badge badge-soft-danger">
-                        <i class="fe fe-alert-triangle cspfont1"></i>
-                     </span>
-                     <!-- Title -->
-                     <h2 class="mb-2 mt-3">
-                        {{utrans("headers.amountDue")}}
-                     </h2>
-                     <!-- Content -->
-                     <h3>
-                        <!-- Current Balance Due -->
-                        {{Formatter::currency($values['amount_due'] - $values['next_bill_amount'])}}
-                     </h3>
-                     <!-- Button -->
-                     <a href="{{action([\App\Http\Controllers\BillingController::class, 'makePayment'])}}" class="btn btn-white">
-                        {{utrans("billing.makePayment")}}
-                     </a>
-                  </div>
-               </div>
-               <!-- / .row -->
-            </div>
-         </div>
-         @else
-         <div class="card">
-            <div class="card-body text-center mb-4 mt-5">
-               <div class="row justify-content-center">
-                  <div class="col-12 col-xl-10">
-                     <!-- Image -->
-                     <span class="badge badge-soft-success">
-                        <i class="fe fe-thumbs-up cspfont1"></i>
-                     </span>
-                     <!-- Title -->
-                     <h2 class="mb-4 mt-4">
-                        {{utrans("headers.allPaid")}}
-                     </h2>
-                     <!-- Button -->
-                     <a href="{{action([\App\Http\Controllers\BillingController::class, 'makePayment'])}}" class="btn btn-white">
-                        {{utrans("billing.makePayment")}}
-                     </a>
-                  </div>
-               </div>
-               <!-- / .row -->
-            </div>
-         </div>
-         @endif
-      </div>
-      <div class="col-12 col-xl-8">
-         <div class="row">
-            <!-- Outstanding Balance -->
-            <div class="col-12 col-xl-6">
-               <div class="card">
-                  <div class="card-body">
-                     <div class="row align-items-center">
-                        <div class="col">
-                           <h6 class="card-title text-uppercase text-muted mb-2">
-                              {{utrans("billing.nextBillAmount")}}
-                           </h6>
-                           <span class="h2 mb-0">
-                              @if($values['next_bill_amount'] !== null)
-                              {{Formatter::currency($values['amount_due'])}}
-                              @else
-                              {{utrans("general.notAvailable")}}
-                              @endif
-                           </span>
-                        </div>
-                        <div class="col-auto">
-                           <span class="h2 fe fe-dollar-sign text-muted mb-0"></span>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <div class="col-12 col-xl-6">
-               <div class="card">
-                  <div class="card-body">
-                     <div class="row align-items-center">
-                        <div class="col">
-                           <h6 class="card-title text-uppercase text-muted mb-2">
-                              {{utrans("billing.nextBillDate")}}
-                           </h6>
-                           <span class="h2 mb-0">@if($values['next_bill_date'] !== null) {{Formatter::date($values['next_bill_date'],false)}} @else {{utrans("general.notAvailable")}} @endif</span>
-                        </div>
-                        <div class="col-auto">
-                           <!-- Icon -->
-                           <span class="h2 fe fe-calendar text-muted mb-0"></span>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <div></div>
-            <div class="col-12 col-xl-12">
-               <!-- <div class="row">
-                  <div class="col-12 col-xl-6">
-                     <div class="card">
-                        <div class="card-body">
-                           <div class="row align-items-center">
-                              <div class="col">
-                                 <h6 class="card-title text-uppercase text-muted mb-2">
-                                    {{utrans("billing.nextBillAmount")}}
-                                 </h6>
-                                 <span class="h2 mb-0">
-                                    @if($values['next_bill_amount'] !== null)
-                                    {{Formatter::currency($values['next_bill_amount'])}}
-                                    @else
-                                    {{utrans("general.notAvailable")}}
-                                    @endif
+   <div class="container-fluid mt--6">
+      <div class="row">
+         <div class="col-12 col-lg-6">
+            @if($values['delinquent_amount'] > 0)
+               <div class="card shadow">
+                     <div class="card-body text-center">
+                        <div class="row justify-content-center">
+                           <div class="col-12 col-xl-10">
+                                 <span class="badge badge-soft-danger">
+                                    <i class="fe fe-alert-triangle cspfont1"></i>
                                  </span>
-                              </div>
-                              <div class="col-auto">
-                                 <span class="h2 fe fe-dollar-sign text-muted mb-0"></span>
-                              </div>
+                                 <h2 class="mb-2 mt-3">
+                                    {{ utrans("headers.delinquentAmount") }}
+                                 </h2>
+                                 <h3>
+                                    {{ Formatter::currency($values['delinquent_amount']) }}
+                                 </h3>
+                                 <a href="{{ action([\App\Http\Controllers\BillingController::class, 'makePayment']) }}" class="btn btn-white">
+                                    {{ utrans("billing.makePayment") }}
+                                 </a>
                            </div>
                         </div>
                      </div>
-                  </div>
-                  @if($systemSetting->data_usage_enabled === true && $values["currentUsage"] && isset($values["currentUsage"]["billable"]))
-                  <div class="col-12 col-xl-6">
-                     <div class="card">
-                        <div class="card-body">
-                           <div class="row align-items-center">
-                              <div class="col">
-                                 <h6 class="card-title text-uppercase text-muted mb-2">
-                                    {{utrans("headers.currentDataUsage")}}
-                                 </h6>
-                                 <div class="row align-items-center no-gutters">
-                                    <div class="col-auto">
-                                       <span class="h2 mr-2 mb-0">
-                                          {{$values["currentUsage"]["billable"]}}GB
-                                       </span>
-                                    </div>
-                                    <div class="col">
-                                       <div class="progress progress-sm">
-                                          <div id="usage-progressbar" class="progress-bar" role="progressbar" aria-valuenow="{{$values["currentUsage"]["billable"]}}" aria-valuemin="0" aria-valuemax="100"></div>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-auto">
-                                 <span class="h2 fe fe-activity text-muted mb-0"></span>
-                              </div>
-                           </div>
-                        </div>
+               </div>
+            @else
+               <div class="card shadow">
+                     <div class="card-body text-center">
+                        <span class="badge badge-soft-success">
+                           <i class="fe fe-thumbs-up cspfont1"></i>
+                        </span>
+                        <h2 class="mb-4 mt-4">
+                           {{ utrans("headers.noDelinquent") }}
+                        </h2>
+                        <a href="{{ action([\App\Http\Controllers\BillingController::class, 'makePayment']) }}" class="btn btn-white">
+                           {{ utrans("billing.makePayment") }}
+                        </a>
                      </div>
-                  </div>
-                  @endif
-               </div> -->
+               </div>
+            @endif
+         </div>
+         <div class="col-12 col-lg-6">
+            <div class="card shadow">
+               <div class="card-header">
+                  <h4 class="card-header-title text-muted">
+                        <i class="fe fe-inbox mr-3"></i>{{ utrans("headers.unpaidInvoices") }}
+                  </h4>
+               </div>
+               <div class="table-responsive">
+                  <table class="table table-sm card-table">
+                        <thead>
+                           <tr>
+                              <th>{{ utrans("billing.status") }}</th>
+                              <th>{{ utrans("billing.invoiceNumber") }}</th>
+                              <th>{{ utrans("billing.remainingDue") }}</th>
+                              <th>{{ utrans("billing.dueDate") }}</th>
+                              <th>{{ utrans("billing.viewInvoice") }}</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           @php
+                              $unpaidInvoices = $invoices->filter(function ($invoice) {
+                                    return $invoice->remaining_due > 0 || $invoice->delinquent;
+                              });
+                           @endphp
+
+                           @if ($unpaidInvoices->isEmpty())
+                              <tr>
+                                    <td colspan="5">{{ utrans("billing.noInvoicesFound") }}</td>
+                              </tr>
+                           @else
+                              @foreach ($unpaidInvoices as $invoice)
+                                    <tr>
+                                       <td class="{{ $invoice->delinquent ? 'delinquent' : 'unpaid' }}">
+                                          @if ($invoice->delinquent)
+                                                <i class="fe fe-alert-triangle cspfont1"></i> Delinquent
+                                          @elseif ($invoice->remaining_due > 0)
+                                                <i class="fe fe-x-circle text-warning mr-1"></i> Unpaid
+                                          @endif
+                                       </td>
+                                       <td>{{ $invoice->id }}</td>
+                                       <td>{{ Formatter::currency(bcadd($invoice->remaining_due, $invoice->child_remaining_due, 2)) }}</td>
+                                       <td class="{{ $invoice->delinquent ? 'delinquent' : '' }}">
+                                          {{ Formatter::date($invoice->due_date, false) }}
+                                       </td>
+                                       <td>
+                                          <a class="btn btn-sm" href="{{ action([\App\Http\Controllers\BillingController::class, 'getInvoicePdf'], ['invoices' => $invoice->id]) }}" role="button">
+                                                <i class="fe fe-file-text mr-1"></i>
+                                                {{ utrans("billing.downloadInvoice") }}
+                                          </a>
+                                       </td>
+                                    </tr>
+                              @endforeach
+                           @endif
+                        </tbody>
+                  </table>
+               </div>
             </div>
          </div>
       </div>
@@ -403,80 +344,131 @@
             </div>
             @endif
          </div>
+         @if(count($account->getSubAccounts()) > 0)
+            <div class="card">
+               <div class="card-header">
+                     <h4 class="card-header-title text-muted">
+                        <i class="fe fe-users mr-3"></i> {{ utrans("headers.subAccounts") }}
+                     </h4>
+               </div>
+               <div class="card-body">
+                     @foreach ($account->getSubAccounts() as $index => $subAccount)
+                        <div class="sub-account mb-4">
+                           <h5 class="text-primary">
+                                 Sub Account {{ $index + 1 }}
+                           </h5>
+                           <hr class="dotted-line"/>
+                           <div class="row align-items-center mb-3">
+                                 <div class="col-4 text-muted"><strong>Account</strong></div>
+                                 <div class="col-8">{{ $subAccount->getName() }}</div>
+                           </div>
+                           <div class="row align-items-center mb-3">
+                                 <div class="col-4 text-muted"><strong>Serviceable Address</strong></div>
+                                 <div class="col-8">
+                                    {{ $subAccount->getLine1() . ', ' . $subAccount->getCity() . ', ' . $subAccount->getState() }}
+                                 </div>
+                           </div>
+                           <div class="row align-items-center mb-3">
+                                 <div class="col-4 text-muted"><strong>Account ID</strong></div>
+                                 <div class="col-8">{{ $subAccount->getAccountID() }}</div>
+                           </div>
+                        </div>
+                     @endforeach
+               </div>
+            </div>
+         @endif
       </div>
       <div class="col-12 col-md-12 col-xl-6">
          <div class="card">
             <div class="card-header">
-                  <h4 class="card-header-title text-muted">
-                     <i class="fe fe-user mr-3"></i> {{ utrans("headers.information") }}
-                  </h4>
+               <h4 class="card-header-title text-muted">
+                     <i class="fe fe-user mr-3"></i> {{ utrans("headers.accountDetails") }}
+               </h4>
             </div>
             <div class="card-body">
-                  <p><strong>Account:</strong> {{ $contact->getName() }}</p>
-                  <p><strong>Portal Username:</strong> {{ $contact->getUsername() }}</p>
-                  <p><strong>Serviceable Address:</strong> {{ $account->getLine1() . ', ' . $account->getCity() . ', ' . $account->getState() }}</p>
-                  <p><strong>Email:</strong> {{ $contact->getEmailAddress() }}</p>
+               <div class="row">
+                     <div class="col-4 text-muted"><strong>Account</strong></div>
+                     <div class="col-8">{{ $account->getName() }}</div>
+               </div>
+               <hr class="dotted-line"/>
+               <div class="row">
+                     <div class="col-4 text-muted"><strong>Portal Username</strong></div>
+                     <div class="col-8">{{ $contact->getUsername() }}</div>
+               </div>
+               <hr class="dotted-line"/>
+               <div class="row">
+                     <div class="col-4 text-muted"><strong>Serviceable Address</strong></div>
+                     <div class="col-8">
+                        {{ $account->getLine1() }}, {{ $account->getCity() }}, {{ $account->getState() }}
+                     </div>
+               </div>
+               <hr class="dotted-line"/>
+               <div class="row">
+                     <div class="col-4 text-muted"><strong>Email</strong></div>
+                     <div class="col-8">{{ $contact->getEmailAddress() }}</div>
+               </div>
+               <hr class="dotted-line"/>
+               <div class="row">
+                     <div class="col-4 text-muted"><strong>Account ID</strong></div>
+                     <div class="col-8">{{ $account->getAccountID() }}</div>
+               </div>
             </div>
          </div>
-         @if (count($account->getSubAccounts()) > 0)
-            <div class="card">
-               <div class="card-header">
-                  <h4 class="card-header-title text-muted">
-                     <i class="fe fe-users mr-3"></i> {{ utrans("headers.subAccounts") }}
-                  </h4>
-               </div>
-               <div class="card-body">
-                  @foreach ($account->getSubAccounts() as $subAccount)
-                     <div class="sub-account">
-                           <p><strong>Account:</strong> {{ $subAccount->getName() }}</p>
-                           <p><strong>Serviceable Address:</strong> {{ $subAccount->getLine1() . ', ' . $subAccount->getCity() . ', ' . $subAccount->getState() }}</p>
-                           @if (!$loop->last)
-                              <hr>
-                           @endif
-                     </div>
-                  @endforeach
-               </div>
-            </div>
-         @endif
          <div class="card">
             <div class="card-header">
                <h4 class="card-header-title text-muted">
-                  <i class="fe fe-inbox mr-3"></i>{{utrans("headers.invoices")}}
+                     <i class="fe fe-inbox mr-3"></i>{{utrans("headers.invoices")}}
                </h4>
             </div>
             <div class="table-responsive">
                <table class="table table-sm card-table">
-                  <thead>
-                     <tr>
-                        <th>{{utrans("general.date")}}</th>
-                        <th>{{utrans("billing.invoiceNumber")}}</th>
-                        <th>{{utrans("billing.remainingDue")}}</th>
-                        <th>{{utrans("billing.dueDate")}}</th>
-                        <th>{{utrans("billing.viewInvoice")}}</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     @if(count($invoices) == 0)
-                     <TR>
-                        <TD colspan="5">{{utrans("billing.noInvoicesFound")}}</TD>
-                     </TR>
-                     @else
-                     @foreach($invoices as $invoice)
-                     <TR>
-                        <TD>{{Formatter::date($invoice->date,false)}}</TD>
-                        <TD>{{$invoice->id}}</TD>
-                        <TD>{{Formatter::currency(bcadd($invoice->remaining_due, $invoice->child_remaining_due,2))}}</TD>
-                        <TD>{{Formatter::date($invoice->due_date,false)}}</TD>
-                        <TD>
-                           <a class="btn btn-sm" href="{{action([\App\Http\Controllers\BillingController::class, 'getInvoicePdf'],['invoices' => $invoice->id])}}" role="button">
-                              <i class="fe fe-file-text mr-1"></i>
-                              {{utrans("billing.downloadInvoice")}}
-                           </a>
-                        </TD>
-                     </TR>
-                     @endforeach
-                     @endif
-                  </tbody>
+                     <thead>
+                        <tr>
+                           <th>{{utrans("billing.status")}}</th>
+                           <th>{{utrans("billing.invoiceNumber")}}</th>
+                           <th>{{utrans("billing.remainingDue")}}</th>
+                           <th>{{utrans("billing.dueDate")}}</th>
+                           <th>{{utrans("billing.viewInvoice")}}</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        @if(count($invoices) == 0)
+                           <tr>
+                                 <td colspan="5">{{utrans("billing.noInvoicesFound")}}</td>
+                           </tr>
+                        @else
+                           @foreach($invoices as $invoice)
+                                 <tr>
+                                    <td 
+                                       class="{{ $invoice->delinquent ? 'delinquent' : ($invoice->remaining_due == 0 ? 'paid' : '') }}">
+                                       @if ($invoice->delinquent)
+                                             <i class="fe fe-alert-triangle cspfont1"></i> Delinquent
+                                       @elseif ($invoice->remaining_due == 0)
+                                             <i class="fe fe-check-circle text-success mr-1"></i> Paid
+                                       @elseif ($invoice->remaining_due > 0)
+                                             <i class="fe fe-x-circle text-warning mr-1"></i> Unpaid
+                                       @endif
+                                    </td>
+                                    <td>
+                                       {{$invoice->id}}
+                                    </td>
+                                    <td>
+                                       {{ Formatter::currency(bcadd($invoice->remaining_due, $invoice->child_remaining_due, 2)) }}
+                                    </td>
+                                    <td 
+                                       class="{{ $invoice->delinquent ? 'delinquent' : '' }}">
+                                       {{ Formatter::date($invoice->due_date, false) }}
+                                    </td>
+                                    <td>
+                                       <a class="btn btn-sm" href="{{ action([\App\Http\Controllers\BillingController::class, 'getInvoicePdf'], ['invoices' => $invoice->id]) }}" role="button">
+                                             <i class="fe fe-file-text mr-1"></i>
+                                             {{ utrans("billing.downloadInvoice") }}
+                                       </a>
+                                    </td>
+                                 </tr>
+                           @endforeach
+                        @endif
+                     </tbody>
                </table>
                {{ $invoices->links() }}
             </div>
@@ -493,5 +485,5 @@
       @endif
    </div>
 </div>
-</div><!-- #main-content -->
+</div>
 @endsection

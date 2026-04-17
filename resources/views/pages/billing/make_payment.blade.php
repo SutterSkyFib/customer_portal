@@ -139,9 +139,19 @@
                <!-- First name -->
                <div class="form-group">
                   <!-- Label -->
-                  {{utrans("billing.amountToPay") . " " . "(Your current balance due: " . Formatter::currency(max(0, $values['amount_due'] - $values['next_bill_amount'])) . ")"}}
+                  {{ utrans("billing.amountToPay") }}
+                  @php
+                        $currentBalanceDue = $values['amount_due'] - $values['next_bill_amount'];
+                  @endphp
+
                   <!-- Input -->
-                  {!! Form::number("amount", null,['id' => 'amount', 'class' => 'form-control', 'placeholder' => Formatter::currency(max(0, $values['amount_due'] - $values['next_bill_amount'])), 'step' => 'any', 'required' => true]) !!}
+                  {!! Form::number("amount", null, [
+                        'id' => 'amount',
+                        'class' => 'form-control',
+                        'placeholder' => 'Enter Amount Here',
+                        'step' => 'any',
+                        'required' => true,
+                  ]) !!}
                </div>
             </div>
             <div class="d-flex justify-content-between align-items-center" style="padding: 0px 12px;">
@@ -162,6 +172,67 @@
                <button id="submit_payment" type="submit" class="btn btn-primary">{{utrans("billing.submitPayment")}}</button>
             </div>
          </div>
+         <!-- Unpaid Invoices Table -->
+         <div class="row justify-content-center" style="margin-top: 32px;">
+            <div class="col-12 col-lg-8">
+               <div class="card shadow">
+                  <div class="card-header">
+                     <h4 class="card-header-title text-muted">
+                        <i class="fe fe-inbox mr-3"></i>{{ utrans("headers.unpaidInvoices") }}
+                     </h4>
+                  </div>
+                  <div class="table-responsive">
+                     <table class="table table-sm card-table text-center">
+                        <thead>
+                           <tr>
+                              <th>{{ utrans("billing.status") }}</th>
+                              <th>{{ utrans("billing.invoiceNumber") }}</th>
+                              <th>{{ utrans("billing.remainingDue") }}</th>
+                              <th>{{ utrans("billing.dueDate") }}</th>
+                              <th>{{ utrans("billing.viewInvoice") }}</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           @php
+                              $unpaidInvoices = $invoices->filter(function ($invoice) {
+                                 return $invoice->remaining_due > 0 || $invoice->delinquent;
+                              });
+                           @endphp
+
+                           @if ($unpaidInvoices->isEmpty())
+                              <tr>
+                                 <td colspan="5">{{ utrans("billing.noInvoicesFound") }}</td>
+                              </tr>
+                           @else
+                              @foreach ($unpaidInvoices as $invoice)
+                                 <tr>
+                                    <td class="{{ $invoice->delinquent ? 'delinquent' : 'unpaid' }}">
+                                       @if ($invoice->delinquent)
+                                          <i class="fe fe-alert-triangle cspfont1"></i> Delinquent
+                                       @elseif ($invoice->remaining_due > 0)
+                                          <i class="fe fe-x-circle text-warning mr-1"></i> Unpaid
+                                       @endif
+                                    </td>
+                                    <td>{{ $invoice->id }}</td>
+                                    <td>{{ Formatter::currency(bcadd($invoice->remaining_due, $invoice->child_remaining_due, 2)) }}</td>
+                                    <td class="{{ $invoice->delinquent ? 'delinquent' : '' }}">
+                                       {{ Formatter::date($invoice->due_date, false) }}
+                                    </td>
+                                    <td>
+                                       <a class="btn btn-sm" href="{{ action([\App\Http\Controllers\BillingController::class, 'getInvoicePdf'], ['invoices' => $invoice->id]) }}" role="button">
+                                          <i class="fe fe-file-text mr-1"></i>
+                                          {{ utrans("billing.downloadInvoice") }}
+                                       </a>
+                                    </td>
+                                 </tr>
+                              @endforeach
+                           @endif
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
          {!! Form::close() !!}
       </div>
       <!-- / .row -->
@@ -175,4 +246,4 @@
 <script src="/assets/js/pages/billing/payment/page.js"></script>
 <script type="text/javascript" src="/assets/libs/js-validation/jsvalidation.min.js"></script>
 {!! JsValidator::formRequest('App\Http\Requests\CreditCardPaymentRequest','#paymentForm') !!}
-@endsection@endsectio
+@endsection

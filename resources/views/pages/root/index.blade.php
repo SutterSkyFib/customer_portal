@@ -26,10 +26,11 @@
                   {{trans("actions.login",[],$language)}}
                </button>
             </div>
-            <div class="right"><a href="/reset" class="forgot">{{trans("headers.forgotUsernameOrPassword",[],$language)}}</a></div>
+            <!-- <div class="right"><a href="/reset" class="forgot">{{trans("headers.forgotUsernameOrPassword",[],$language)}}</a></div> -->
          </div>
          {!! Form::close() !!}
-         <small><strong><a href="{{action([\App\Http\Controllers\AuthenticationController::class, 'showRegistrationForm'])}}" style="font-size: 18px;">{{trans("root.register",[],$language)}}</a></strong></small>
+         <!-- <small><strong><a href="{{action([\App\Http\Controllers\AuthenticationController::class, 'showRegistrationForm'])}}" style="font-size: 18px;">{{trans("root.register",[],$language)}}</a></strong></small> -->
+         <small><strong>Please contact our Billing Team at (775) 284-9434 Option 2 or  billing@skyfibernetworks.net to register as a new user or reset your password.</strong></small>
          <form class="form-group">
             <select id="language" name="language" class="form-control languageSelector">
             @foreach(getAvailableLanguages($language) as $key => $value)
